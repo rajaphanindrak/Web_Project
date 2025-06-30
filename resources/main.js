@@ -91,7 +91,7 @@ class Experiment {
     addMeasurement(unit, value) {
         // Calculate time of the measurement
         // as an offset from the start of the experiment
-        let duration = formatDuration(new Date().getTime()) - this.#startTime.getTime();
+        let duration = formatDuration(new Date().getTime() - this.#startTime.getTime());
         // create measurement and add it to the experiment
         data.addMeasurement(this.#id, new Measurement(unit, value, duration));
     }
@@ -280,14 +280,14 @@ let experiment1 = Experiment.createOngoingExperiment(
     101,
     "Measure Weight",
     123.45,
-    new Date(2023,3,16,6,7));
+    new Date(2025,3,16,6,7));
 
 let experiment2 = Experiment.createCompleteExperiment(
     102,
     "Measure Length",
     321.54,
-    new Date(2022,4,1,14,30),
-    new Date(2022,4,2,21,12)
+    new Date(2025,4,1,14,30),
+    new Date(2025,4,2,21,12)
 );
 
 // Instantiate Measurement objects
@@ -563,10 +563,10 @@ let experiment = data.getExperiment(exp_id);
 if(experiment === undefined) {
     alert("Experiment with id " + exp_id + " not found.");
     resetExperimentForm();
-    resetExperimentForm();
+    resetMeasurementsTable();
 }else{
     exp_task_field.value = experiment.task;
-    exp_budget_field.value = experiment.budget;
+    exp_budget_field.value = formatCurrency(experiment.budget);
     exp_startTime_field.value = experiment.startTime.toISOString().slice(0, -1);
     if(experiment.complete){
         exp_complete_field.checked = true;
@@ -612,8 +612,11 @@ if(measurements.length === 0) {
         mea_table.appendChild(mea_row);
     }
     let averageRatio = ((average - min)*100)/(max - min);
-    let exp_average_field = document.getElementById('exp_average_field');
-    exp_average_field.value = averageRatio;
+    //let exp_average_field = document.getElementById('exp_average_field');
+    //exp_average_field.value = averageRatio;
+    let exp_average_value = document.getElementById('exp_average_value');
+    exp_average_value.style.width = averageRatio + '%';
+    exp_average_value.innerText = average;
 }
 }
 
@@ -644,7 +647,7 @@ let mea_unit_input = document.getElementById('mea_unit_input');
 let mea_value_input = document.getElementById('mea_value_input');
 let exp_id = parseInt(exp_id_field.value);
 let experiment = data.getExperiment(exp_id);
-experiment.addMeasuremnt(mea_unit_input.value, mea_value_input.value);
+experiment.addMeasurement(mea_unit_input.value, mea_value_input.value);
 let mea_add_dialog = document.getElementById('mea_add_dialog');
 let mea_form = document.getElementById('mea');
 mea_form.reset();
@@ -667,9 +670,12 @@ while(mea_table.lastElementChild){
 function resetExperimentForm(){
 let exp_form = document.getElementById('exp_form');
 let mea_add_button = document.getElementById('mea_add_button');
-let exp_average_field = document.getElementById('exp_average_feild');
+//let exp_average_field = document.getElementById('exp_average_feild');
+let exp_average_value = document.getElementById('exp_average_value');
 exp_form.reset();
-exp_average_field.value = 0;
+//exp_average_field.value = 0;
+exp_average_value.style.width = '0%';
+exp_average_value.innerText = '';
 mea_add_button.disabled = true;
 }
 
