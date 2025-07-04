@@ -225,3 +225,7 @@ dialog {
     text-align: center;
 }
 
+.grey{
+    filter: grayscale(100%);
+}
+
